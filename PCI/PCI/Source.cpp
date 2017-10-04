@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	list<_PCI_DEVTABLE> result = pciSearch(subString(devices));
 	SetupDiDestroyDeviceInfoList(hDevInfo);
 	print(result);
-
+	system("pause");
 	return 0;
 }
 
