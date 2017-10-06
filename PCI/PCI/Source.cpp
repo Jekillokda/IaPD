@@ -1,4 +1,5 @@
 #pragma comment (lib, "Setupapi.lib")
+
 #include <stdio.h>
 #include <windows.h>
 #include <setupapi.h>
@@ -14,109 +15,94 @@
 #include "Header.h"
 using namespace std;
 
-void init(list<string>&, HDEVINFO&);
-list<_PCI_DEVTABLE> pciSearch(list<_PCI_DEVTABLE>&);
-list<_PCI_DEVTABLE> subString(list<string>);
-void print(list<_PCI_DEVTABLE>&);
+void init(HDEVINFO&);
+vector<string> getInfo(HDEVINFO, SP_DEVINFO_DATA);
+vector<_PCI_DEVTABLE> getDescriptions(vector<string>);
+void print(vector<_PCI_DEVTABLE>);
 
 int main(int argc, char *argv[])
 {
-	list<string> devices;
-	HDEVINFO hDevInfo;
-	init(devices, hDevInfo);
-	list<_PCI_DEVTABLE> result = pciSearch(subString(devices));
-	SetupDiDestroyDeviceInfoList(hDevInfo);
-	print(result);
-	system("pause");
+	setlocale(LC_ALL, "Russian");
+
+	HDEVINFO hDev;
+	init(hDev);
+
+	SP_DEVINFO_DATA deviceInfo;
+	deviceInfo.cbSize = sizeof(SP_DEVINFO_DATA);
+	vector<_PCI_DEVTABLE> devices = getDescriptions(getInfo(hDev, deviceInfo));
+	print(devices);
 	return 0;
 }
 
-void init(list<string>& devices, HDEVINFO& hDevInfo)
+void init(HDEVINFO& hDevInfo)
 {
-	SP_DEVINFO_DATA deviceInfoData;
-	deviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
-
-	if ((hDevInfo = SetupDiGetClassDevs(NULL, REGSTR_KEY_PCIENUM, 0, DIGCF_PRESENT | DIGCF_ALLCLASSES)) == INVALID_HANDLE_VALUE)
+	if ((hDevInfo = SetupDiGetClassDevs(NULL,
+		REGSTR_KEY_PCIENUM,
+		0,
+		DIGCF_PRESENT | DIGCF_ALLCLASSES)) == INVALID_HANDLE_VALUE)		//Return only devices that are currently present.
 	{
 		exit(1);
 	}
+}
 
-	for (DWORD i = 0; (SetupDiEnumDeviceInfo(hDevInfo, i, &deviceInfoData)); i++)
+vector<string> getInfo(HDEVINFO _hDev, SP_DEVINFO_DATA _deviceInfo)
+{
+	vector<string> result;
+
+	for (DWORD i = 0; SetupDiEnumDeviceInfo(_hDev, i, &_deviceInfo); i++)
 	{
-		DWORD data;
 		LPTSTR buffer = NULL;
 		DWORD bufferSize = 0;
 
-		while (!SetupDiGetDeviceRegistryProperty(hDevInfo, &deviceInfoData, SPDRP_HARDWAREID, &data, (PBYTE)buffer, bufferSize, &bufferSize))
+		while (!SetupDiGetDeviceRegistryProperty(_hDev,  // retrieves a specified Plug and Play device property
+			&_deviceInfo,
+			SPDRP_HARDWAREID, //retrieves a REG_MULTI_SZ string that contains the list of hardware IDs for a device. 
+			NULL,
+			(PBYTE)buffer,
+			bufferSize,
+			&bufferSize))
 		{
-			if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+			if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) //The data area passed to a system call is too small
 			{
-				if (buffer)
-				{
-					LocalFree(buffer);
-				}
+				if (buffer) LocalFree(buffer);
 				buffer = (LPTSTR)LocalAlloc(LPTR, bufferSize * 2);
 			}
-			else
-			{
-				break;
-			}
+			else break;
 		}
 
-		devices.push_back((string)buffer);
+		result.push_back(string(buffer));
 
-		if (buffer)
-		{
-			LocalFree(buffer);
-		}
+		if (buffer) LocalFree(buffer);
 	}
 
-
+	return result;
 }
 
-void print(list<_PCI_DEVTABLE> &temp)
+vector<_PCI_DEVTABLE> getDescriptions(vector<string> _devices)
 {
-	int i = 0;
-	while (temp.size() != 0)
-	{
-		cout << i + 1 << ".VendorID: " << temp.front().VenId << " DeviceID: " << temp.front().DevId << endl;
-		cout << " Chip : " << temp.front().Chip << " Description: " << temp.front().ChipDesc << endl;
-		temp.pop_front();
-		i++;
-	}
-}
+	vector<_PCI_DEVTABLE> result;
+	DeviceLibrary *lib = new DeviceLibrary();
 
-list<_PCI_DEVTABLE> subString(list<string> str)
-{
-	list<_PCI_DEVTABLE> fullInfo;
-	while (str.size() != 0)
+	while (_devices.size() != 0)
 	{
+		string vendor = "0x" + _devices.back().substr(8, 4);
+		string device = "0x" + _devices.back().substr(17, 4);
+		_devices.pop_back();
 		_PCI_DEVTABLE temp;
-		string vendor = str.front().substr(8, 4);
-		string device = str.front().substr(17, 4);
-		string result0 = "0x" + vendor;
-		string result1 = "0x" + device;
-		temp = { result0, result1, NULL, NULL };
-		fullInfo.push_front(temp);
-		str.pop_front();
+		temp.VendorId = vendor;
+		temp.DeviceId = device;
+		result.push_back(temp);
 	}
-	return fullInfo;
+	lib->GetDescription(&result);
+	return result;
 }
-
-list<_PCI_DEVTABLE> pciSearch(list<_PCI_DEVTABLE>& temp)
-{
-	list<_PCI_DEVTABLE> completeList;
-	while (temp.size() != 0)
+void print(vector<_PCI_DEVTABLE> devices) {
+	for (int i = 0; i < devices.size(); i++)
 	{
-		for (int i = 0; i < PCI_DEVTABLE_LEN; i++)
-		{
-			if (temp.front().VenId == PciDevTable[i].VenId && temp.front().DevId == PciDevTable[i].DevId)
-			{
-				completeList.push_front(PciDevTable[i]);
-				break;
-			}
-		}
-		temp.pop_front();
+		cout << i + 1;
+		cout << ".DeviceID: " << devices[i].DeviceId.c_str() << endl << "   VendorID: " << devices[i].VendorId.c_str()
+			<< endl << "   Description: " << devices[i].name.c_str() << endl << "   Producer: " << devices[i].description.c_str() << endl << endl;
 	}
-	return completeList;
+
+	system("pause");
 }
