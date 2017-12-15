@@ -51,7 +51,7 @@ namespace Laba_4
                 usbList.Items.Add(deviceInfo);
             }    
         }
-        private void TickTimer(object sender, EventArgs e)//по окончания работы таймера
+        private void TickTimer(object sender, EventArgs e)
         {
             ReloadForm();
         }

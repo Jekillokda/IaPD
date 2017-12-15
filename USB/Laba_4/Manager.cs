@@ -12,13 +12,13 @@ namespace Laba_4
     {
         public List<Usb> DeviseListCreate()
         {
-            List<Usb> usbDevices = new List<Usb>();//список , который будет выводиться
+            List<Usb> usbDevices = new List<Usb>();
             List<DriveInfo> diskDrives = DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveType == DriveType.Removable).ToList();//из драйверинфо получаем устройства, которые подключены и являются внешними
-            List<MediaDevice> mtpDrives = MediaDevice.GetDevices().ToList();//телефоны и тд
-            foreach (var device in mtpDrives)//медиа девайсы
+            List<MediaDevice> mtpDrives = MediaDevice.GetDevices().ToList();
+            foreach (var device in mtpDrives)
             {
                 device.Connect();
-                if (device.Protocol.Contains("MTP"))//поиск mtp девайсов
+                if (device.Protocol.Contains("MTP"))
                 {
                     usbDevices.Add(new Usb()
                     {
@@ -30,7 +30,7 @@ namespace Laba_4
                     });
                 }
             }
-            foreach (DriveInfo drive in diskDrives)//для флешек
+            foreach (DriveInfo drive in diskDrives)
             {
                 usbDevices.Add(new Usb()
                 {
@@ -46,7 +46,7 @@ namespace Laba_4
 
         private string Convert(long value)
         {
-            double megaBytes = (value / 1024) / 1024;//перевод из байтов в в мегабайты
+            double megaBytes = (value / 1024) / 1024;
             return megaBytes.ToString() + " mb";
         }
     }
