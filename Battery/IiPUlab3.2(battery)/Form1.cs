@@ -64,5 +64,10 @@ namespace IiPUlab3._2_battery_
         {
 
         }
+
+        private void PowerLineStatus_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
