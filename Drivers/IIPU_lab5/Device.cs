@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 using System.Management;
 using System.Windows.Forms;
 
-namespace IIPU_lab4_GUI
+namespace IIPU_lab5_GUI
 {
 	public class Device
 	{
-		public string Name,
-									ClassGuid,
-									Manufacturer,
-									DeviceID;
+		public string Name,	ClassGuid, Manufacturer, DeviceID;
 		public string[] HardwareID;
 		private List<SysFile> SysFiles = new List<SysFile>();
 		public bool Enabled;

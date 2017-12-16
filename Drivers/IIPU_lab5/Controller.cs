@@ -13,37 +13,21 @@ namespace IIPU_lab5_GUI
 	class Controller
 	{
 		Form1 form;	
-		//Timer updateTimer;
 		public List<Device> deviceList = new List<Device>();
-		
 
 		public Controller(Form1 formArg)
 		{
 			form = formArg;
-			/*
-			updateTimer = new Timer();
-			updateTimer.Interval = 1000; //ms
-			updateTimer.Enabled = true;
-			updateTimer.Tick += UpdateUsbInfo;
-			*/
 			UpdateUsbInfo(null, null);
 		}
 
-
 		private void UpdateUsbInfo(object sender, EventArgs e)
 		{
-			//deviceList = newDeviceList;
-
 			form.cb_List.Items.Clear();
-
-
 
 			deviceList = new List<Device>();
 			var devices = new ManagementObjectSearcher("SELECT * FROM Win32_PNPEntity");
-      
-			
-			
-			      
+    
 			foreach (ManagementObject devObj in devices.Get())
 			{
 
@@ -57,17 +41,12 @@ namespace IIPU_lab5_GUI
 					Enabled = devObj["Status"].ToString() == "OK"
 				};
 
-
-
 				foreach (var sys in devObj.GetRelated("Win32_SystemDriver"))
 				{
 					device.AddSysFile(sys["PathName"].ToString(), sys["Description"].ToString());
 					}
 				deviceList.Add(device);
 			}
- 
-
-
 
 			if (deviceList.Count == 0)
 			{
@@ -94,15 +73,8 @@ namespace IIPU_lab5_GUI
 						}
 					}
 				}
-	
-				if (selectedDeviceDisconnected)
-				{
-					//form.cb_List.Text=deviceList[0].Letter + " " + deviceList[0].Name;
-				}
-				//Updating combobox text if nessesary.
 
 			}
-
 
 			form.comboBox1_SelectedIndexChanged(null, null);
 
