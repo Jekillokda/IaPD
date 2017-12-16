@@ -7,27 +7,30 @@ using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.Management; 
 
-namespace IIPU_lab5_GUI
+namespace IIPU_lab4_GUI
 {
-	
 	class Controller
 	{
 		Form1 form;	
+		//Timer updateTimer;
 		public List<Device> deviceList = new List<Device>();
-
+		
 		public Controller(Form1 formArg)
 		{
 			form = formArg;
 			UpdateUsbInfo(null, null);
 		}
 
+
 		private void UpdateUsbInfo(object sender, EventArgs e)
 		{
+			//deviceList = newDeviceList;
+
 			form.cb_List.Items.Clear();
 
 			deviceList = new List<Device>();
 			var devices = new ManagementObjectSearcher("SELECT * FROM Win32_PNPEntity");
-    
+      	      
 			foreach (ManagementObject devObj in devices.Get())
 			{
 
@@ -47,7 +50,7 @@ namespace IIPU_lab5_GUI
 					}
 				deviceList.Add(device);
 			}
-
+ 
 			if (deviceList.Count == 0)
 			{
 				form.cb_List.Text = "<none>";
@@ -73,13 +76,18 @@ namespace IIPU_lab5_GUI
 						}
 					}
 				}
+	
+				if (selectedDeviceDisconnected)
+				{
+					//form.cb_List.Text=deviceList[0].Letter + " " + deviceList[0].Name;
+				}
+				//Updating combobox text if nessesary.
 
 			}
 
 			form.comboBox1_SelectedIndexChanged(null, null);
 
 		}
-		
 		private List<Device> GetConnectedUsbDevices()
 		{
 			var listBuf = new List<Device>();

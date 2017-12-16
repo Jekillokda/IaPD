@@ -1,4 +1,4 @@
-﻿namespace IIPU_lab5_GUI
+﻿namespace IIPU_lab4_GUI
 {
 	partial class Form1
 	{

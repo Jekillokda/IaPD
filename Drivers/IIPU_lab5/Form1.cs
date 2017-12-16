@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace IIPU_lab5_GUI
+namespace IIPU_lab4_GUI
 {
 	public partial class Form1 : Form
 	{
@@ -96,23 +96,5 @@ namespace IIPU_lab5_GUI
 
 		private void Form1_Load_1(object sender, EventArgs e)
 		{}
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // Form1
-            // 
-            this.ClientSize = new System.Drawing.Size(282, 253);
-            this.Name = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load_2);
-            this.ResumeLayout(false);
-
-        }
-
-        private void Form1_Load_2(object sender, EventArgs e)
-        {
-
-        }
-    }
+	}
 }

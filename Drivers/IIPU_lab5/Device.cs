@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Management;
 using System.Windows.Forms;
 
-namespace IIPU_lab5_GUI
+namespace IIPU_lab4_GUI
 {
 	public class Device
 	{
-		public string Name,	ClassGuid, Manufacturer, DeviceID;
+		public string Name,	ClassGuid, Manufacturer,DeviceID;
 		public string[] HardwareID;
 		private List<SysFile> SysFiles = new List<SysFile>();
 		public bool Enabled;
@@ -20,7 +20,6 @@ namespace IIPU_lab5_GUI
 			public string PathName;
 			public string Description;
 		}
-
 		public void AddSysFile(string pname, string desc)
 		{
 			var sysFile = new SysFile();
@@ -28,7 +27,6 @@ namespace IIPU_lab5_GUI
 			sysFile.Description = desc;
 			SysFiles.Add(sysFile);
 		}
-
 		public int GetSysFileCount()
 		{ return SysFiles.Count(); }
 
