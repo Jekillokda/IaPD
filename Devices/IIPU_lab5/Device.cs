@@ -46,7 +46,7 @@ namespace IIPU_lab4_GUI
 					.FirstOrDefault(x => x.Properties["DeviceID"].Value.ToString().Equals(DeviceID));
 
 				if (Enabled)
-				{
+				{   
 					device.InvokeMethod("Disable", new object[] { false });
 				}
 				else
