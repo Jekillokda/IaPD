@@ -62,7 +62,6 @@ namespace IIPU_lab4_GUI
 					form.cb_List.Items.Add(device.Name);
 				}
 
-				//Updating combobox text if nessesary.
 				var selectedDeviceDisconnected=true;
 	
 				if (form.cb_List.Text!="")

@@ -88,7 +88,7 @@ namespace IIPU_lab4_GUI
 		{
 			this.SuspendLayout();
 			this.ClientSize = new System.Drawing.Size(284, 300);
-			this.Name = "Form1";
+			this.Name = "Devices";
 			this.Load += new System.EventHandler(this.Form1_Load_1);
 			this.ResumeLayout(false);
 

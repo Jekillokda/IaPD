@@ -985,5 +985,10 @@ namespace BurnMedia
                 e.Cancel = true;
             }
         }
+
+        private void supportedMediaLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
